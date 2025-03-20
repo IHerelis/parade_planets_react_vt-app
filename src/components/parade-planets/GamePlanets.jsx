@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './GamePlanets.css';
 import {shuffle} from './shuffleFunction.js';
 import {arrayFieldParade} from './variables.js';
@@ -16,6 +16,19 @@ const GamePlanets = () => {
   // console.log('shuffledArray', shuffledArray);
   // console.log('planetsParadeList', planetsParadeList);
 
+  const rocketHero = useRef();
+
+  const rocketHeroControl = (e) => {
+    if (e.pageX < 45) {
+      rocketHero.current.setAttribute('style', `top: ${e.pageY-45}px; left: 0px;`);
+    } else if (e.pageY < 45) {
+        rocketHero.current.setAttribute('style', `top: 0px; left: ${e.pageX-45}px;`);
+      } else {
+          rocketHero.current.setAttribute('style', `top: ${e.pageY-45}px; left: ${e.pageX-45}px;`);
+        }
+    // console.log("e.pageX", e.pageX);
+    // console.log("e.pageY", e.pageY);
+  }
 
   const checkAvailabilityItem = (list, elementName) => {
     const itemHere = list.find(item => item.name === elementName);
@@ -108,44 +121,47 @@ const GamePlanets = () => {
 
 
   return (
-    <div className='game-planets__wrap'>    
-      <h1>Game "parade planets"</h1>
-      <div className='game-parade__board'>
-        {planetsParadeList.map((item, index) => {
-          if (item !== "") {
+    <div className='game-planets__space' onMouseMove={(e) => rocketHeroControl(e)}>
+      <div className="obj-Hero" ref={rocketHero}></div>
+      <div className='game-planets__wrap'>
+        <h1>Game "parade planets"</h1>
+        <div className='game-parade__board'>
+          {planetsParadeList.map((item, index) => {
+            if (item !== "") {
+                return <GameItem
+                key={index} 
+                planetItem={item}
+                startDrag={startDrag} index={index}
+                dropped={dropped} dragOver={dragOver} dragLeave={dragLeave} dragEnd={dragEnd}
+                />
+            } else {
+                return <GameItemEmpty 
+                key={index} 
+                dropped={dropped} dragOver={dragOver} index={index}
+                dragLeave={dragLeave}
+                />
+              }
+          })}
+        </div>
+        <div className='game-board'>
+          {shuffledArray.map((item, index) => {
+            if (item !== "") {
               return <GameItem
               key={index} 
               planetItem={item}
               startDrag={startDrag} index={index}
               dropped={dropped} dragOver={dragOver} dragLeave={dragLeave} dragEnd={dragEnd}
               />
-          } else {
-              return <GameItemEmpty 
-              key={index} 
-              dropped={dropped} dragOver={dragOver} index={index}
-              dragLeave={dragLeave}
-              />
-            }
-        })}
-      </div>
-      <div className='game-board'>
-        {shuffledArray.map((item, index) => {
-          if (item !== "") {
-            return <GameItem
-            key={index} 
-            planetItem={item}
-            startDrag={startDrag} index={index}
-            dropped={dropped} dragOver={dragOver} dragLeave={dragLeave} dragEnd={dragEnd}
-            />
-          } else {
-              return <GameItemEmpty 
-              key={index} 
-              dropped={dropped} dragOver={dragOver} index={index}
-              dragLeave={dragLeave}
-              />
-            }
-        })}
-      </div>
+            } else {
+                return <GameItemEmpty 
+                key={index} 
+                dropped={dropped} dragOver={dragOver} index={index}
+                dragLeave={dragLeave}
+                />
+              }
+          })}
+        </div>
+      </div>     
     </div>
   );
 }
