@@ -1,0 +1,46 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ul, li, ol {
+  list-style-type: none;
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  color: inherit;
+  background-color: transparent;
+}
+
+input,
+button,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+* ::before,
+* ::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
