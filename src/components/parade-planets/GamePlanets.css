@@ -18,13 +18,29 @@
   max-width: 1400px;
   margin-inline: auto;
   padding-inline: 20px;
-  position: relative;
+  padding-bottom: 30px;
 }
 
-.game-planets__wrap h1 {
+.game-panel {
   padding: 10px 20px;
-  font-size: 20px;
   text-align: center;
+}
+
+.new-game__btn {
+  padding: 10px 20px;
+  font-size: 18px;
+  color: white;
+  background-color: blueviolet;
+  border-radius: 15px;
+  transition: all 0.3s linear;
+  position: relative;
+  z-index: 7;
+}
+
+.new-game__btn:hover {
+  background-color: rgb(106, 34, 173);
+  box-shadow: 0px 0px 3px 3px white;
+  color: rgb(253, 159, 159);
 }
 
 .game-parade__board {
@@ -44,25 +60,25 @@
 }
 
 .field__item {
-  min-width: 125px;
-  min-height: 125px;
+  width: 125px;
+  height: 125px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0px 0px 3px 3px black;
+  box-shadow: 0px 0px 3px 3px white;
   transition: all 0.3s linear;
   cursor: pointer;
 }
 
 .field__item:hover {
   transform: scale(1.1);
-  box-shadow: 0px 0px 1px 1px black;
+  box-shadow: 0px 0px 1px 1px white;
 }
 
 .field__item__empty {
-  min-width: 125px;
-  min-height: 125px;
+  width: 125px;
+  height: 125px;
   transform: scale(0.9);
   transition: all 0.3s linear;
   border-radius: 50%;
@@ -71,5 +87,60 @@
   justify-content: center;
   box-shadow: 0px 0px 3px 3px seagreen;
   background-color: rgb(96, 209, 96);
+}
+
+
+.game-visual__board {
+  padding: 20px 10px;
+  width: 100%;
+  height: 620px;
+  /* margin-block: 50px; */
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+  /* text-align: center; */
+  overflow: hidden;
+  position: relative;
+}
+
+.visual__board__slider {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  top: 20%;
+  left: calc(50% - 65px);
+  transform-style: preserve-3d;
+  animation: rotate 20s linear infinite;
+  transform: perspective(1000px);
+}
+
+@keyframes rotate {
+  0% {
+    transform: perspective(1000px) rotateX(-18deg) rotateY(0deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateX(-18deg) rotateY(360deg);
+  }
+}
+
+.field__item__planet {
+  /* width: 125px;
+  height: 125px; */
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0px 0px 3px 3px white;
+  
+  position: absolute;
+  inset: 0 0 0 0;
+  transform-origin: center;
+  transform-style: preserve-3d;
+  /* transform: rotateY(calc( var(--i) * 45deg)) translateZ(500px); */
+  transform: rotateY(calc( (var(--i) - 1) * (360 / 9) * 1deg)) translateZ(500px);
+}
+
+.field__item__planet img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 

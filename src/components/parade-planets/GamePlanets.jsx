@@ -1,18 +1,36 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './GamePlanets.css';
 import {shuffle} from './shuffleFunction.js';
 import {arrayFieldParade} from './variables.js';
 import planetsList from './planetsList.js';
 import GameItem from './Game-item.jsx';
 import GameItemEmpty from './Game-item-empty.jsx';
+import GameItemPlanet from './Game-item-planet.jsx';
 
 
 
 const GamePlanets = () => {
 
-  const [shuffledArray, setShuffledArray] = useState(shuffle(planetsList));
-  const [planetsParadeList, setPlanetsParadeList] = useState(arrayFieldParade);
+  const setItemToLocalStorage = (name, item) => {
+    localStorage.setItem(`${name}`, JSON.stringify(item));
+  }
+  const getItemToLocalStorage = (name) => {
+    return JSON.parse(localStorage.getItem(`${name}`));
+  }
 
+  const [shuffledArray, setShuffledArray] = useState(getItemToLocalStorage("shuffledArray") || shuffle(planetsList));
+  const [planetsParadeList, setPlanetsParadeList] = useState(getItemToLocalStorage("planetsParadeList") || arrayFieldParade);
+
+  const [gameVictory, setGameVictory] = useState(false);
+
+  useEffect(() => {
+    if (auditVictory(planetsList, planetsParadeList)) {
+      setGameVictory(true);
+    }
+    // console.log("auditVictory", auditVictory(planetsList, planetsParadeList));
+  }, [planetsParadeList]);
+
+  // console.log('planetsList', planetsList);
   // console.log('shuffledArray', shuffledArray);
   // console.log('planetsParadeList', planetsParadeList);
 
@@ -35,6 +53,19 @@ const GamePlanets = () => {
     return itemHere;
   }
 
+  const auditVictory = (victoryArray, curentArray) => {
+    return (victoryArray.length === curentArray.length && victoryArray.every((value, index) => value === curentArray[index]));
+  }
+
+  const newStartGame = () => {
+    localStorage.removeItem("shuffledArray");
+    localStorage.removeItem("planetsParadeList");
+    setShuffledArray(shuffle(planetsList));
+    setPlanetsParadeList(arrayFieldParade);
+    setGameVictory(false);
+  }
+
+  
   const startDrag = (e) => {
     e.dataTransfer.setData('index', e.target.dataset.index);
     e.dataTransfer.setData('name', e.target.dataset.name);
@@ -72,6 +103,7 @@ const GamePlanets = () => {
         newParadeArray.splice(itemIndex, 1, planetsParadeList[overPlaceIndex]);
         newParadeArray.splice(overPlaceIndex, 1, planetsParadeList[itemIndex]);
 
+        setItemToLocalStorage("planetsParadeList", newParadeArray);
         setPlanetsParadeList([...newParadeArray]);
 
         // console.log('checkPoint 1');
@@ -79,11 +111,15 @@ const GamePlanets = () => {
       } else {
           const newParadeArray = [...planetsParadeList];
           newParadeArray.splice(overPlaceIndex, 1, shuffledArray[itemIndex]);
+
+          setItemToLocalStorage("planetsParadeList", newParadeArray);
           setPlanetsParadeList([...newParadeArray]);
     
-          const newArray = [...shuffledArray];
-          newArray.splice(itemIndex, 1, planetsParadeList[overPlaceIndex]); 
-          setShuffledArray([...newArray]);
+          const newShuffledArray = [...shuffledArray];
+          newShuffledArray.splice(itemIndex, 1, planetsParadeList[overPlaceIndex]); 
+
+          setItemToLocalStorage("shuffledArray", newShuffledArray);
+          setShuffledArray([...newShuffledArray]);
 
           // console.log('checkPoint 2');
           // console.log('check', checkAvailabilityItem(planetsParadeList, itemName));
@@ -92,24 +128,26 @@ const GamePlanets = () => {
     } else if (e.target.parentElement.matches('div.game-board')) {
 
         if (checkAvailabilityItem(shuffledArray, itemName)) {
-          const newArray = [...shuffledArray];
-          newArray.splice(itemIndex, 1, shuffledArray[overPlaceIndex]);
-          newArray.splice(overPlaceIndex, 1, shuffledArray[itemIndex]);
+          const newShuffledArray = [...shuffledArray];
+          newShuffledArray.splice(itemIndex, 1, shuffledArray[overPlaceIndex]);
+          newShuffledArray.splice(overPlaceIndex, 1, shuffledArray[itemIndex]);
 
-          setShuffledArray([...newArray]);
+          setItemToLocalStorage("shuffledArray", newShuffledArray);
+          setShuffledArray([...newShuffledArray]);
 
           // console.log('checkPoint 3');
           // console.log('check', checkAvailabilityItem(shuffledArray, itemName));
-
         } else {
-            const newArray = [...shuffledArray];
-            newArray.splice(overPlaceIndex, 1, planetsParadeList[itemIndex]);
+            const newShuffledArray = [...shuffledArray];
+            newShuffledArray.splice(overPlaceIndex, 1, planetsParadeList[itemIndex]);
       
-            setShuffledArray([...newArray]);
+            setItemToLocalStorage("shuffledArray", newShuffledArray);
+            setShuffledArray([...newShuffledArray]);
       
             const newParadeArray = [...planetsParadeList];
             newParadeArray.splice(itemIndex, 1, shuffledArray[overPlaceIndex]);
       
+            setItemToLocalStorage("planetsParadeList", newParadeArray);
             setPlanetsParadeList([...newParadeArray]);
 
             // console.log('checkPoint 4');
@@ -124,43 +162,62 @@ const GamePlanets = () => {
     <div className='game-planets__space' onMouseMove={(e) => rocketHeroControl(e)}>
       <div className="obj-Hero" ref={rocketHero}></div>
       <div className='game-planets__wrap'>
-        <h1>Game "parade planets"</h1>
-        <div className='game-parade__board'>
-          {planetsParadeList.map((item, index) => {
-            if (item !== "") {
-                return <GameItem
-                key={index} 
-                planetItem={item}
-                startDrag={startDrag} index={index}
-                dropped={dropped} dragOver={dragOver} dragLeave={dragLeave} dragEnd={dragEnd}
-                />
-            } else {
-                return <GameItemEmpty 
-                key={index} 
-                dropped={dropped} dragOver={dragOver} index={index}
-                dragLeave={dragLeave}
-                />
-              }
-          })}
+        <div className='game-panel'>
+          <button className='new-game__btn' onClick={newStartGame}>New Game "parade planets"</button>
         </div>
-        <div className='game-board'>
-          {shuffledArray.map((item, index) => {
-            if (item !== "") {
-              return <GameItem
-              key={index} 
-              planetItem={item}
-              startDrag={startDrag} index={index}
-              dropped={dropped} dragOver={dragOver} dragLeave={dragLeave} dragEnd={dragEnd}
-              />
-            } else {
-                return <GameItemEmpty 
-                key={index} 
-                dropped={dropped} dragOver={dragOver} index={index}
-                dragLeave={dragLeave}
+        {!gameVictory && 
+          <>
+            <div className='game-parade__board'>
+              {planetsParadeList.map((item, index) => {
+                if (item !== "") {
+                    return <GameItem
+                    key={index} 
+                    planetItem={item}
+                    startDrag={startDrag} index={index}
+                    dropped={dropped} dragOver={dragOver} dragLeave={dragLeave} dragEnd={dragEnd}
+                    />
+                } else {
+                    return <GameItemEmpty 
+                    key={index} 
+                    dropped={dropped} dragOver={dragOver} index={index}
+                    dragLeave={dragLeave}
+                    />
+                  }
+              })}
+            </div>
+            <div className='game-board'>
+              {shuffledArray.map((item, index) => {
+                if (item !== "") {
+                  return <GameItem
+                  key={index} 
+                  planetItem={item}
+                  startDrag={startDrag} index={index}
+                  dropped={dropped} dragOver={dragOver} dragLeave={dragLeave} dragEnd={dragEnd}
+                  />
+                } else {
+                    return <GameItemEmpty 
+                    key={index} 
+                    dropped={dropped} dragOver={dragOver} index={index}
+                    dragLeave={dragLeave}
+                    />
+                  }
+              })}
+            </div>
+          </>
+        }
+        {gameVictory && 
+          <div className='game-visual__board'>
+            <div className='visual__board__slider'>
+              {planetsList.toReversed().map((item, index) => {
+                return <GameItemPlanet
+                  key={index} 
+                  planetItem={item}
+                  index={index} 
                 />
-              }
-          })}
-        </div>
+              })}
+            </div>
+          </div>
+        }
       </div>     
     </div>
   );
