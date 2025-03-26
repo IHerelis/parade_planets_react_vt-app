@@ -209,12 +209,17 @@ const GamePlanets = () => {
           <div className='game-visual__board'>
             <div className='visual__board__slider'>
               {planetsList.toReversed().map((item, index) => {
-                return <GameItemPlanet
+                if (item.id !== 1000) {
+                  return <GameItemPlanet
                   key={index} 
                   planetItem={item}
                   index={index} 
-                />
+                  />
+                }
               })}
+            </div>
+            <div className='visual__board__center'>
+              <GameItemPlanet planetItem={planetsList[0]} index={0}/>
             </div>
           </div>
         }

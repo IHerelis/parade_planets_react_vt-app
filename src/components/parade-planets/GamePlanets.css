@@ -112,6 +112,7 @@
   transform-style: preserve-3d;
   animation: rotate 20s linear infinite;
   transform: perspective(1000px);
+  z-index: 3;
 }
 
 @keyframes rotate {
@@ -122,6 +123,33 @@
     transform: perspective(1000px) rotateX(-18deg) rotateY(360deg);
   }
 }
+
+.visual__board__center {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50% , -50%);
+  border-radius: 50%;
+  /* box-shadow: 0px 0px 5px 5px gold; */
+  z-index: 1;
+  animation: sun-light 5s linear infinite;
+  animation-direction: alternate;
+}
+
+@keyframes sun-light {
+  0% {
+    box-shadow: 0px 0px 5px 5px rgb(235, 99, 2);
+    transform: scale(1) translate(-50% , -50%);
+  }
+  100% {
+    box-shadow: 0px 0px 5px 15px rgb(244, 152, 3);
+    transform: scale(0.95) translate(-50% , -50%);
+  }
+}
+
+
 
 .field__item__planet {
   /* width: 125px;
@@ -135,7 +163,7 @@
   transform-origin: center;
   transform-style: preserve-3d;
   /* transform: rotateY(calc( var(--i) * 45deg)) translateZ(500px); */
-  transform: rotateY(calc( (var(--i) - 1) * (360 / 9) * 1deg)) translateZ(500px);
+  transform: rotateY(calc( (var(--i) - 1) * (360 / 8) * 1deg)) translateZ(500px);
 }
 
 .field__item__planet img {
@@ -143,4 +171,3 @@
   height: 100%;
   object-fit: cover;
 }
-
