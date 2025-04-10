@@ -30,7 +30,7 @@
   padding: 10px 20px;
   font-size: 18px;
   color: white;
-  background-color: blueviolet;
+  background-color: rgb(138, 43, 226, 0.75);
   border-radius: 15px;
   transition: all 0.3s linear;
   position: relative;
@@ -38,9 +38,9 @@
 }
 
 .new-game__btn:hover {
-  background-color: rgb(106, 34, 173);
+  background-color: rgb(106, 34, 173, 0.75);
   box-shadow: 0px 0px 3px 3px white;
-  color: rgb(253, 159, 159);
+  color: yellow;
 }
 
 .game-parade__board {
@@ -69,11 +69,28 @@
   box-shadow: 0px 0px 3px 3px white;
   transition: all 0.3s linear;
   cursor: pointer;
+  position: relative;
 }
 
 .field__item:hover {
   transform: scale(1.1);
   box-shadow: 0px 0px 1px 1px white;
+}
+
+.item__name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0% 100%;
+  padding-top: 65px;
+}
+
+.item__name__content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  transform: translateX(-50%);
+  color: white;
 }
 
 .field__item__empty {
