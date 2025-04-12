@@ -81,16 +81,27 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform-origin: 0% 100%;
-  padding-top: 65px;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
 }
 
 .item__name__content {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.item__name__letter {
+  position: absolute;
   top: 100%;
-  left: 0;
-  transform: translateX(-50%);
+  /* left: 0%; */
+  right: 50%;
+  transform-origin: 0% 100%;
+  padding-top: 65px;
   color: white;
+  /* border-right: 2px dotted yellow; */
 }
 
 .field__item__empty {
